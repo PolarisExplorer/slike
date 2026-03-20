@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Kalkulator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100dvh;
+      background: #0d0d14;
+      color: #fff;
+      padding: 16px 14px 40px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ---- SETTINGS TOGGLE ---- */
+    .settings-toggle {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+    .settings-toggle button {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      color: #8896a8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+    .settings-toggle button:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* ---- SETTINGS PANEL ---- */
+    .settings-panel {
+      background: #161622;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .settings-panel.open { display: block; }
+    .settings-panel .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* ---- CARD ---- */
+    .card {
+      background: #161622;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px 18px;
+      margin-bottom: 14px;
+    }
+
+    .section-label {
+      color: #8896a8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      margin-bottom: 14px;
+    }
+
+    /* ---- INPUTS ---- */
+    label {
+      color: #8896a8;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+      margin-top: 12px;
+    }
+    label:first-of-type { margin-top: 0; }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border 0.2s;
+    }
+    input:focus { border-color: #d4a843; background: rgba(255,255,255,0.08); }
+    input::placeholder { color: #3d4a5a; font-weight: 400; font-size: 0.95rem; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* BIG NUMBER INPUT for photos */
+    .big-input {
+      font-size: 2rem !important;
+      font-weight: 800 !important;
+      text-align: center;
+      padding: 16px !important;
+      letter-spacing: 2px;
+    }
+
+    /* ---- TOTAL DISPLAY ---- */
+    .totals {
+      display: none;
+      margin-top: 16px;
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .total-row:last-child { border-bottom: none; }
+    .total-row .tl { color: #8896a8; font-size: 0.85rem; }
+    .total-row .tv { font-size: 1.05rem; font-weight: 800; }
+    .tv.gold { color: #d4a843; }
+    .tv.blue { color: #5ba4cf; }
+
+    /* ---- CURRENCY TABS ---- */
+    .tabs {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: #8896a8;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab.active { background: #d4a843; color: #0d0d14; }
+
+    /* ---- APOENI ---- */
+    .apoeni-label {
+      color: #8896a8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+    .apoeni-grid { display: grid; gap: 8px; margin-bottom: 14px; }
+    .apoeni-grid.rsd { grid-template-columns: repeat(3, 1fr); }
+    .apoeni-grid.eur { grid-template-columns: repeat(5, 1fr); }
+
+    .apon-btn {
+      padding: 13px 4px;
+      border-radius: 11px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #c8d6e5;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .apon-btn:active { transform: scale(0.93); }
+    .rsd .apon-btn  { border-color: rgba(91,164,207,0.25); }
+    .rsd .apon-btn:hover, .rsd .apon-btn:active { background: rgba(91,164,207,0.2); border-color: #5ba4cf; color: #5ba4cf; }
+    .eur .apon-btn  { border-color: rgba(104,211,145,0.25); }
+    .eur .apon-btn:hover, .eur .apon-btn:active { background: rgba(104,211,145,0.2); border-color: #68d391; color: #68d391; }
+
+    /* ---- PRIMLJENO DISPLAY ---- */
+    .received-box {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .received-box .rb-label { color: #8896a8; font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
+    .received-box .rb-value { color: #fff; font-size: 1.5rem; font-weight: 800; }
+    .clear-btn {
+      background: rgba(229,62,62,0.12);
+      border: 1.5px solid rgba(229,62,62,0.25);
+      border-radius: 9px;
+      color: #fc8181;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 7px 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .clear-btn:active { background: rgba(229,62,62,0.25); }
+
+    /* Manual input row */
+    .manual-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .manual-row input {
+      flex: 1;
+      font-size: 0.95rem !important;
+      font-weight: 600 !important;
+      padding: 11px 14px !important;
+    }
+    .manual-row button {
+      padding: 11px 16px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(212,168,67,0.4);
+      background: rgba(212,168,67,0.12);
+      color: #d4a843;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .manual-row button:active { background: rgba(212,168,67,0.25); }
+
+    /* ---- RESULT ---- */
+    .result-box {
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-top: 4px;
+      display: none;
+    }
+    .result-box.green { background: rgba(56,178,72,0.12); border: 1.5px solid rgba(56,178,72,0.35); }
+    .result-box.teal  { background: rgba(104,211,145,0.1); border: 1.5px solid rgba(104,211,145,0.3); }
+    .result-box.red   { background: rgba(229,62,62,0.1);  border: 1.5px solid rgba(229,62,62,0.3); }
+    .rl { color: #8896a8; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+    .rv { font-size: 1.8rem; font-weight: 800; color: #fff; }
+    .rs { color: #8896a8; font-size: 0.83rem; margin-top: 3px; }
+
+    /* ---- RESET BTN ---- */
+    .reset-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #8896a8;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+    .reset-btn:active { background: rgba(255,255,255,0.1); }
+
+    .warn { color: #fc8181; font-size: 0.8rem; margin: 6px 0; display: none; }
+
+    #total-card   { display: none; }
+    #payment-card { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Settings toggle -->
+  <div class="settings-toggle">
+    <button onclick="toggleSettings()">Podesavanja</button>
+  </div>
+
+  <!-- Settings panel -->
+  <div class="settings-panel" id="settings-panel">
+    <div class="row2">
+      <div>
+        <label>Cijena / slika (RSD)</label>
+        <input type="number" inputmode="numeric" id="pricePerPhoto" value="300" min="1" />
+      </div>
+      <div>
+        <label>1 EUR = ? RSD</label>
+        <input type="number" inputmode="decimal" id="exchangeRate" value="117" min="1" step="0.01" />
+      </div>
+    </div>
+  </div>
+
+  <!-- OBRACUN -->
+  <div class="card">
+    <div class="section-label">Obracun</div>
+    <label>Broj fotografija</label>
+    <input class="big-input" type="number" inputmode="numeric" pattern="[0-9]*"
+           id="numPhotos" min="1" placeholder="0" oninput="calculateTotal()" />
+  </div>
+
+  <!-- TOTAL -->
+  <div class="card" id="total-card">
+    <div class="totals" id="total-section" style="display:block; margin-top:0;">
+      <div class="total-row">
+        <span class="tl">Broj fotografija</span>
+        <span class="tv" id="display-num">—</span>
+      </div>
+      <div class="total-row">
+        <span class="tl">Ukupno (RSD)</span>
+        <span class="tv gold" id="display-rsd">—</span>
+      </div>
+      <div class="total-row">
+        <span class="tl">Ukupno (EUR)</span>
+        <span class="tv blue" id="display-eur">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLACANJE -->
+  <div class="card" id="payment-card">
+    <div class="section-label">Placanje i Kusur</div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-rsd" onclick="setCurrency('RSD')">Dinari (RSD)</button>
+      <button class="tab" id="tab-eur" onclick="setCurrency('EUR')">Euri (EUR)</button>
+    </div>
+
+    <!-- RSD apoeni -->
+    <div id="apoeni-rsd">
+      <div class="apoeni-label">Klikni apoene</div>
+      <div class="apoeni-grid rsd">
+        <button class="apon-btn" onclick="addAmount(100)">100</button>
+        <button class="apon-btn" onclick="addAmount(200)">200</button>
+        <button class="apon-btn" onclick="addAmount(500)">500</button>
+        <button class="apon-btn" onclick="addAmount(1000)">1.000</button>
+        <button class="apon-btn" onclick="addAmount(2000)">2.000</button>
+        <button class="apon-btn" onclick="addAmount(5000)">5.000</button>
+      </div>
+    </div>
+
+    <!-- EUR apoeni -->
+    <div id="apoeni-eur" style="display:none;">
+      <div class="apoeni-label">Klikni apoene</div>
+      <div class="apoeni-grid eur">
+        <button class="apon-btn" onclick="addAmount(5)">5</button>
+        <button class="apon-btn" onclick="addAmount(10)">10</button>
+        <button class="apon-btn" onclick="addAmount(20)">20</button>
+        <button class="apon-btn" onclick="addAmount(50)">50</button>
+        <button class="apon-btn" onclick="addAmount(100)">100</button>
+      </div>
+    </div>
+
+    <!-- Primljeno -->
+    <div class="received-box">
+      <div>
+        <div class="rb-label" id="rb-label">Primljeno (RSD)</div>
+        <div class="rb-value" id="rb-value">0</div>
+      </div>
+      <button class="clear-btn" onclick="clearAmount()">Obrisi</button>
+    </div>
+
+    <!-- Rucni unos -->
+    <div class="manual-row">
+      <input type="number" inputmode="decimal" id="manualInput" placeholder="Ili unesi rucno..." />
+      <button onclick="addManual()">Dodaj</button>
+    </div>
+
+    <p class="warn" id="warn-less">Primljeni iznos je manji od ukupne cijene!</p>
+
+    <div class="result-box green" id="result-kusur" style="margin-top:14px;">
+      <div class="rl">Kusur za vracanje</div>
+      <div class="rv" id="kusur-value">—</div>
+      <div class="rs" id="kusur-sub"></div>
+    </div>
+
+    <div class="result-box teal" id="result-tacno" style="margin-top:14px;">
+      <div class="rl">Status</div>
+      <div class="rv" style="font-size:1.2rem; color:#68d391;">Nema kusura!</div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">Nova transakcija</button>
+  </div>
+
+<script>
+  let selectedCurrency = 'RSD';
+  let collectedAmount = 0;
+
+  function toggleSettings() {
+    const p = document.getElementById('settings-panel');
+    p.classList.toggle('open');
+  }
+
+  function getPrice() { return parseFloat(document.getElementById('pricePerPhoto').value) || 300; }
+  function getRate()  { return parseFloat(document.getElementById('exchangeRate').value) || 117; }
+
+  function calculateTotal() {
+    const n = parseInt(document.getElementById('numPhotos').value);
+    const tc = document.getElementById('total-card');
+    const pc = document.getElementById('payment-card');
+
+    if (!n || n < 1) { tc.style.display='none'; pc.style.display='none'; return; }
+
+    const totalRSD = n * getPrice();
+    const totalEUR = totalRSD / getRate();
+
+    document.getElementById('display-num').textContent = n + ' kom.';
+    document.getElementById('display-rsd').textContent = fmtRSD(totalRSD);
+    document.getElementById('display-eur').textContent = fmtEUR(totalEUR);
+
+    tc.style.display = 'block';
+    pc.style.display = 'block';
+    clearAmount();
+  }
+
+  function setCurrency(cur) {
+    selectedCurrency = cur;
+    document.getElementById('tab-rsd').classList.toggle('active', cur==='RSD');
+    document.getElementById('tab-eur').classList.toggle('active', cur==='EUR');
+    document.getElementById('apoeni-rsd').style.display = cur==='RSD' ? 'block' : 'none';
+    document.getElementById('apoeni-eur').style.display = cur==='EUR' ? 'block' : 'none';
+    document.getElementById('rb-label').textContent = cur==='RSD' ? 'Primljeno (RSD)' : 'Primljeno (EUR)';
+    clearAmount();
+  }
+
+  function addAmount(val) {
+    collectedAmount += val;
+    updateDisplay();
+    calcChange();
+  }
+
+  function addManual() {
+    const inp = document.getElementById('manualInput');
+    const val = parseFloat(inp.value);
+    if (!isNaN(val) && val > 0) {
+      collectedAmount += val;
+      inp.value = '';
+      updateDisplay();
+      calcChange();
+    }
+  }
+
+  function clearAmount() {
+    collectedAmount = 0;
+    document.getElementById('manualInput').value = '';
+    updateDisplay();
+    hideResults();
+  }
+
+  function updateDisplay() {
+    const txt = selectedCurrency === 'RSD' ? fmtRSD(collectedAmount) : fmtEUR(collectedAmount);
+    document.getElementById('rb-value').textContent = txt;
+  }
+
+  function calcChange() {
+    const n = parseInt(document.getElementById('numPhotos').value);
+    if (!n || collectedAmount <= 0) { hideResults(); return; }
+
+    const totalRSD = n * getPrice();
+    const rate = getRate();
+    const paidRSD = selectedCurrency === 'RSD' ? collectedAmount : collectedAmount * rate;
+    const diff = paidRSD - totalRSD;
+
+    document.getElementById('warn-less').style.display = diff < -0.005 ? 'block' : 'none';
+
+    hideResults();
+    if (Math.abs(diff) < 0.5) {
+      document.getElementById('result-tacno').style.display = 'block';
+    } else if (diff > 0) {
+      document.getElementById('kusur-value').textContent = fmtRSD(diff);
+      document.getElementById('kusur-sub').textContent = 'Ili priblizno ' + fmtEUR(diff / rate);
+      document.getElementById('result-kusur').style.display = 'block';
+    }
+  }
+
+  function hideResults() {
+    document.getElementById('result-kusur').style.display = 'none';
+    document.getElementById('result-tacno').style.display = 'none';
+    document.getElementById('warn-less').style.display = 'none';
+  }
+
+  function resetAll() {
+    document.getElementById('numPhotos').value = '';
+    document.getElementById('total-card').style.display   = 'none';
+    document.getElementById('payment-card').style.display = 'none';
+    clearAmount();
+    setCurrency('RSD');
+  }
+
+  function fmtRSD(n) {
+    return new Intl.NumberFormat('sr-RS', {style:'currency', currency:'RSD', minimumFractionDigits:0, maximumFractionDigits:0}).format(n);
+  }
+  function fmtEUR(n) {
+    return new Intl.NumberFormat('de-DE', {style:'currency', currency:'EUR', minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
+  }
+
+  // Enter on manual input
+  document.getElementById('manualInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addManual();
+  });
+</script>
+</body>
+</html>
