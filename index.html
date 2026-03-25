@@ -67,7 +67,6 @@
       letter-spacing: 1.8px;
       margin-bottom: 14px;
     }
-    .modal .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .modal-close {
       width: 100%;
       margin-top: 16px;
@@ -109,6 +108,41 @@
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
+    /* PRICE TABS (top level) */
+    .price-tabs-wrap { flex-shrink: 0; }
+    .price-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .price-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: #8896a8;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .price-tab.active { background: #d4a843; color: #0d0d14; }
+
+    /* PRICE PANELS */
+    .price-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .price-panel.hidden { display: none !important; }
+
     /* PHOTOS BLOCK */
     .photos-block {
       flex-shrink: 0;
@@ -117,14 +151,7 @@
       border-radius: 16px;
       padding: 12px 14px;
     }
-
-    .photos-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    /* Narrow input — samo za 3 cifre */
+    .photos-row { display: flex; align-items: center; gap: 14px; }
     .photos-input-wrap { flex-shrink: 0; width: 90px; }
     .photos-input {
       font-size: 2rem !important;
@@ -135,27 +162,14 @@
       letter-spacing: 2px;
       width: 90px !important;
     }
-
-    /* Total — desno od inputa, veci i citljiviji */
     .totals-inline {
       flex: 1;
       display: none;
       flex-direction: column;
       gap: 4px;
     }
-    /* Veliki RSD prikaz */
-    .ti-rsd {
-      color: #d4a843;
-      font-size: 1.65rem;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: 0.5px;
-    }
-    .ti-eur {
-      color: #5ba4cf;
-      font-size: 0.88rem;
-      font-weight: 700;
-    }
+    .ti-rsd { color: #d4a843; font-size: 1.65rem; font-weight: 800; line-height: 1; letter-spacing: 0.5px; }
+    .ti-eur { color: #5ba4cf; font-size: 0.88rem; font-weight: 700; }
 
     /* PAYMENT BLOCK */
     .payment-block {
@@ -170,7 +184,7 @@
       min-height: 0;
     }
 
-    /* Tabs */
+    /* Currency Tabs */
     .tabs {
       display: flex;
       background: rgba(255,255,255,0.04);
@@ -194,18 +208,10 @@
     .tab.active { background: #d4a843; color: #0d0d14; }
 
     /* Apoeni */
-    .apoeni-label {
-      color: #8896a8;
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.3px;
-      flex-shrink: 0;
-    }
+    .apoeni-label { color: #8896a8; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.3px; flex-shrink: 0; }
     .apoeni-grid { display: grid; gap: 6px; flex-shrink: 0; }
     .apoeni-grid.rsd { grid-template-columns: repeat(3, 1fr); }
     .apoeni-grid.eur { grid-template-columns: repeat(5, 1fr); }
-
     .apon-btn {
       padding: 10px 4px;
       border-radius: 10px;
@@ -227,10 +233,7 @@
 
     /* Received */
     .received-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
       background: rgba(255,255,255,0.04);
       border: 1.5px solid rgba(255,255,255,0.08);
       border-radius: 12px;
@@ -255,12 +258,7 @@
 
     /* Manual */
     .manual-row { display: flex; gap: 7px; flex-shrink: 0; }
-    .manual-row input {
-      flex: 1;
-      font-size: 0.88rem !important;
-      font-weight: 600 !important;
-      padding: 9px 12px !important;
-    }
+    .manual-row input { flex: 1; font-size: 0.88rem !important; font-weight: 600 !important; padding: 9px 12px !important; }
     .manual-row button {
       padding: 9px 14px;
       border-radius: 10px;
@@ -276,16 +274,10 @@
     .manual-row button:active { background: rgba(212,168,67,0.22); }
 
     /* Results */
-    .result-box {
-      border-radius: 12px;
-      padding: 10px 14px;
-      display: none;
-      flex-shrink: 0;
-    }
+    .result-box { border-radius: 12px; padding: 10px 14px; display: none; flex-shrink: 0; }
     .result-box.green { background: rgba(56,178,72,0.12);  border: 1.5px solid rgba(56,178,72,0.3); }
     .result-box.teal  { background: rgba(104,211,145,0.1); border: 1.5px solid rgba(104,211,145,0.28); }
     .result-box.red   { background: rgba(229,62,62,0.1);   border: 1.5px solid rgba(229,62,62,0.3); }
-
     .rl { color: #8896a8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.3px; }
     .rv { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1.2; }
     .rs { color: #8896a8; font-size: 0.78rem; margin-top: 1px; }
@@ -310,203 +302,182 @@
 <body>
 <div class="app">
 
+  <!-- TOP BAR -->
   <div class="topbar">
     <button class="settings-btn" onclick="toggleModal()">Podesavanja</button>
   </div>
 
-  <!-- SETTINGS MODAL -->
+  <!-- SETTINGS MODAL (dijeljeni kurs) -->
   <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
     <div class="modal">
       <div class="modal-title">Podesavanja</div>
-      <div class="row2">
-        <div>
-          <label style="color:#8896a8;font-size:0.75rem;font-weight:600;display:block;margin-bottom:5px;">Cijena / slika (RSD)</label>
-          <input type="number" inputmode="numeric" id="pricePerPhoto" value="300" min="1"/>
-        </div>
-        <div>
-          <label style="color:#8896a8;font-size:0.75rem;font-weight:600;display:block;margin-bottom:5px;">1 EUR = ? RSD</label>
-          <input type="number" inputmode="decimal" id="exchangeRate" value="117" min="1" step="0.01"/>
-        </div>
+      <div>
+        <label style="color:#8896a8;font-size:0.75rem;font-weight:600;display:block;margin-bottom:5px;">1 EUR = ? RSD</label>
+        <input type="number" inputmode="decimal" id="exchangeRate" value="117" min="1" step="0.01"/>
       </div>
       <button class="modal-close" onclick="toggleModal()">Sacuvaj</button>
     </div>
   </div>
 
-  <!-- BROJ SLIKA -->
-  <div class="photos-block">
-    <div class="slabel">Broj fotografija</div>
-    <div class="photos-row">
-      <div class="photos-input-wrap">
-        <input class="photos-input" type="number" inputmode="numeric" pattern="[0-9]*"
-               id="numPhotos" min="1" placeholder="0" oninput="calculateTotal()"/>
-      </div>
-      <div class="totals-inline" id="totals-inline">
-        <div class="ti-rsd" id="display-rsd">—</div>
-        <div class="ti-eur" id="display-eur">—</div>
-      </div>
+  <!-- PRICE TABS -->
+  <div class="price-tabs-wrap">
+    <div class="price-tabs">
+      <button class="price-tab active" id="ptab-300" onclick="switchPriceTab('300')">300 RSD</button>
+      <button class="price-tab" id="ptab-200" onclick="switchPriceTab('200')">200 RSD</button>
     </div>
   </div>
 
-  <!-- PAYMENT BLOCK -->
-  <div class="payment-block" id="payment-block">
-    <div class="slabel">Placanje i Kusur</div>
-
-    <div class="tabs">
-      <button class="tab active" id="tab-rsd" onclick="setCurrency('RSD')">Dinari (RSD)</button>
-      <button class="tab" id="tab-eur" onclick="setCurrency('EUR')">Euri (EUR)</button>
-    </div>
-
-    <div class="apoeni-label">Klikni apoene</div>
-
-    <div id="apoeni-rsd">
-      <div class="apoeni-grid rsd">
-        <button class="apon-btn" onclick="addAmount(100)">100</button>
-        <button class="apon-btn" onclick="addAmount(200)">200</button>
-        <button class="apon-btn" onclick="addAmount(500)">500</button>
-        <button class="apon-btn" onclick="addAmount(1000)">1.000</button>
-        <button class="apon-btn" onclick="addAmount(2000)">2.000</button>
-        <button class="apon-btn" onclick="addAmount(5000)">5.000</button>
+  <!-- PANEL 300 RSD -->
+  <div class="price-panel" id="panel-300">
+    <div class="photos-block">
+      <div class="slabel">Broj fotografija</div>
+      <div class="photos-row">
+        <div class="photos-input-wrap">
+          <input class="photos-input" type="number" inputmode="numeric" pattern="[0-9]*"
+                 id="numPhotos-300" min="1" placeholder="0" oninput="app300.calculateTotal()"/>
+        </div>
+        <div class="totals-inline" id="totals-inline-300">
+          <div class="ti-rsd" id="display-rsd-300">—</div>
+          <div class="ti-eur" id="display-eur-300">—</div>
+        </div>
       </div>
     </div>
-    <div id="apoeni-eur" style="display:none;">
-      <div class="apoeni-grid eur">
-        <button class="apon-btn" onclick="addAmount(5)">5</button>
-        <button class="apon-btn" onclick="addAmount(10)">10</button>
-        <button class="apon-btn" onclick="addAmount(20)">20</button>
-        <button class="apon-btn" onclick="addAmount(50)">50</button>
-        <button class="apon-btn" onclick="addAmount(100)">100</button>
+    <div class="payment-block" id="payment-block-300">
+      <div class="slabel">Placanje i Kusur</div>
+      <div class="tabs">
+        <button class="tab active" id="tab-rsd-300" onclick="app300.setCurrency('RSD')">Dinari (RSD)</button>
+        <button class="tab" id="tab-eur-300" onclick="app300.setCurrency('EUR')">Euri (EUR)</button>
+      </div>
+      <div class="apoeni-label">Klikni apoene</div>
+      <div id="apoeni-rsd-300">
+        <div class="apoeni-grid rsd">
+          <button class="apon-btn" onclick="app300.addAmount(100)">100</button>
+          <button class="apon-btn" onclick="app300.addAmount(200)">200</button>
+          <button class="apon-btn" onclick="app300.addAmount(500)">500</button>
+          <button class="apon-btn" onclick="app300.addAmount(1000)">1.000</button>
+          <button class="apon-btn" onclick="app300.addAmount(2000)">2.000</button>
+          <button class="apon-btn" onclick="app300.addAmount(5000)">5.000</button>
+        </div>
+      </div>
+      <div id="apoeni-eur-300" style="display:none;">
+        <div class="apoeni-grid eur">
+          <button class="apon-btn" onclick="app300.addAmount(5)">5</button>
+          <button class="apon-btn" onclick="app300.addAmount(10)">10</button>
+          <button class="apon-btn" onclick="app300.addAmount(20)">20</button>
+          <button class="apon-btn" onclick="app300.addAmount(50)">50</button>
+          <button class="apon-btn" onclick="app300.addAmount(100)">100</button>
+        </div>
+      </div>
+      <div class="received-row">
+        <div class="rb-inner">
+          <div class="rb-label" id="rb-label-300">Primljeno (RSD)</div>
+          <div class="rb-value" id="rb-value-300">0</div>
+        </div>
+        <button class="clear-btn" onclick="app300.clearAmount()">Obrisi</button>
+      </div>
+      <div class="manual-row">
+        <input type="number" inputmode="decimal" id="manualInput-300" placeholder="Ili unesi rucno..."/>
+        <button onclick="app300.addManual()">Dodaj</button>
+      </div>
+      <div class="result-box green" id="result-kusur-300">
+        <div class="rl">Kusur za vracanje</div>
+        <div class="rv" id="kusur-value-300">—</div>
+        <div class="rs" id="kusur-sub-300"></div>
+      </div>
+      <div class="result-box teal" id="result-tacno-300">
+        <div class="rl">Status</div>
+        <div class="rv" style="font-size:1.1rem; color:#68d391;">Nema kusura!</div>
+      </div>
+      <div class="result-box red" id="result-fali-300">
+        <div class="rl">Jos fali</div>
+        <div class="rv" id="fali-value-300">—</div>
+        <div class="rs" id="fali-sub-300"></div>
+      </div>
+      <button class="reset-btn" onclick="app300.resetAll()">Nova transakcija</button>
+    </div>
+  </div>
+
+  <!-- PANEL 200 RSD -->
+  <div class="price-panel hidden" id="panel-200">
+    <div class="photos-block">
+      <div class="slabel">Broj fotografija</div>
+      <div class="photos-row">
+        <div class="photos-input-wrap">
+          <input class="photos-input" type="number" inputmode="numeric" pattern="[0-9]*"
+                 id="numPhotos-200" min="1" placeholder="0" oninput="app200.calculateTotal()"/>
+        </div>
+        <div class="totals-inline" id="totals-inline-200">
+          <div class="ti-rsd" id="display-rsd-200">—</div>
+          <div class="ti-eur" id="display-eur-200">—</div>
+        </div>
       </div>
     </div>
-
-    <div class="received-row">
-      <div class="rb-inner">
-        <div class="rb-label" id="rb-label">Primljeno (RSD)</div>
-        <div class="rb-value" id="rb-value">0</div>
+    <div class="payment-block" id="payment-block-200">
+      <div class="slabel">Placanje i Kusur</div>
+      <div class="tabs">
+        <button class="tab active" id="tab-rsd-200" onclick="app200.setCurrency('RSD')">Dinari (RSD)</button>
+        <button class="tab" id="tab-eur-200" onclick="app200.setCurrency('EUR')">Euri (EUR)</button>
       </div>
-      <button class="clear-btn" onclick="clearAmount()">Obrisi</button>
+      <div class="apoeni-label">Klikni apoene</div>
+      <div id="apoeni-rsd-200">
+        <div class="apoeni-grid rsd">
+          <button class="apon-btn" onclick="app200.addAmount(100)">100</button>
+          <button class="apon-btn" onclick="app200.addAmount(200)">200</button>
+          <button class="apon-btn" onclick="app200.addAmount(500)">500</button>
+          <button class="apon-btn" onclick="app200.addAmount(1000)">1.000</button>
+          <button class="apon-btn" onclick="app200.addAmount(2000)">2.000</button>
+          <button class="apon-btn" onclick="app200.addAmount(5000)">5.000</button>
+        </div>
+      </div>
+      <div id="apoeni-eur-200" style="display:none;">
+        <div class="apoeni-grid eur">
+          <button class="apon-btn" onclick="app200.addAmount(5)">5</button>
+          <button class="apon-btn" onclick="app200.addAmount(10)">10</button>
+          <button class="apon-btn" onclick="app200.addAmount(20)">20</button>
+          <button class="apon-btn" onclick="app200.addAmount(50)">50</button>
+          <button class="apon-btn" onclick="app200.addAmount(100)">100</button>
+        </div>
+      </div>
+      <div class="received-row">
+        <div class="rb-inner">
+          <div class="rb-label" id="rb-label-200">Primljeno (RSD)</div>
+          <div class="rb-value" id="rb-value-200">0</div>
+        </div>
+        <button class="clear-btn" onclick="app200.clearAmount()">Obrisi</button>
+      </div>
+      <div class="manual-row">
+        <input type="number" inputmode="decimal" id="manualInput-200" placeholder="Ili unesi rucno..."/>
+        <button onclick="app200.addManual()">Dodaj</button>
+      </div>
+      <div class="result-box green" id="result-kusur-200">
+        <div class="rl">Kusur za vracanje</div>
+        <div class="rv" id="kusur-value-200">—</div>
+        <div class="rs" id="kusur-sub-200"></div>
+      </div>
+      <div class="result-box teal" id="result-tacno-200">
+        <div class="rl">Status</div>
+        <div class="rv" style="font-size:1.1rem; color:#68d391;">Nema kusura!</div>
+      </div>
+      <div class="result-box red" id="result-fali-200">
+        <div class="rl">Jos fali</div>
+        <div class="rv" id="fali-value-200">—</div>
+        <div class="rs" id="fali-sub-200"></div>
+      </div>
+      <button class="reset-btn" onclick="app200.resetAll()">Nova transakcija</button>
     </div>
-
-    <div class="manual-row">
-      <input type="number" inputmode="decimal" id="manualInput" placeholder="Ili unesi rucno..."/>
-      <button onclick="addManual()">Dodaj</button>
-    </div>
-
-    <!-- Kusur -->
-    <div class="result-box green" id="result-kusur">
-      <div class="rl">Kusur za vracanje</div>
-      <div class="rv" id="kusur-value">—</div>
-      <div class="rs" id="kusur-sub"></div>
-    </div>
-
-    <!-- Tacno -->
-    <div class="result-box teal" id="result-tacno">
-      <div class="rl">Status</div>
-      <div class="rv" style="font-size:1.1rem; color:#68d391;">Nema kusura!</div>
-    </div>
-
-    <!-- Fali jos — prikazuje koliko nedostaje -->
-    <div class="result-box red" id="result-fali">
-      <div class="rl">Jos fali</div>
-      <div class="rv" id="fali-value">—</div>
-      <div class="rs" id="fali-sub"></div>
-    </div>
-
-    <button class="reset-btn" onclick="resetAll()">Nova transakcija</button>
   </div>
 
 </div>
 <script>
-  let selectedCurrency = 'RSD';
-  let collectedAmount = 0;
-
+  function getRate() { return parseFloat(document.getElementById('exchangeRate').value) || 117; }
   function toggleModal() { document.getElementById('modal-overlay').classList.toggle('open'); }
-  function closeModalOutside(e) { if (e.target===document.getElementById('modal-overlay')) toggleModal(); }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) toggleModal(); }
 
-  function getPrice() { return parseFloat(document.getElementById('pricePerPhoto').value) || 300; }
-  function getRate()  { return parseFloat(document.getElementById('exchangeRate').value) || 117; }
-
-  function calculateTotal() {
-    const n = parseInt(document.getElementById('numPhotos').value);
-    const pb = document.getElementById('payment-block');
-    const ti = document.getElementById('totals-inline');
-    if (!n || n < 1) { pb.style.display='none'; ti.style.display='none'; return; }
-    const totalRSD = n * getPrice();
-    document.getElementById('display-rsd').textContent = fmtRSD(totalRSD);
-    document.getElementById('display-eur').textContent  = fmtEUR(totalRSD / getRate());
-    ti.style.display = 'flex';
-    pb.style.display = 'flex';
-    clearAmount();
-  }
-
-  function setCurrency(cur) {
-    selectedCurrency = cur;
-    document.getElementById('tab-rsd').classList.toggle('active', cur==='RSD');
-    document.getElementById('tab-eur').classList.toggle('active', cur==='EUR');
-    document.getElementById('apoeni-rsd').style.display = cur==='RSD' ? 'block' : 'none';
-    document.getElementById('apoeni-eur').style.display = cur==='EUR' ? 'block' : 'none';
-    document.getElementById('rb-label').textContent = cur==='RSD' ? 'Primljeno (RSD)' : 'Primljeno (EUR)';
-    clearAmount();
-  }
-
-  function addAmount(val) { collectedAmount += val; updateDisplay(); calcChange(); }
-
-  function addManual() {
-    const inp = document.getElementById('manualInput');
-    const val = parseFloat(inp.value);
-    if (!isNaN(val) && val > 0) { collectedAmount += val; inp.value = ''; updateDisplay(); calcChange(); }
-  }
-
-  function clearAmount() {
-    collectedAmount = 0;
-    document.getElementById('manualInput').value = '';
-    updateDisplay();
-    hideResults();
-  }
-
-  function updateDisplay() {
-    document.getElementById('rb-value').textContent =
-      selectedCurrency === 'RSD' ? fmtRSD(collectedAmount) : fmtEUR(collectedAmount);
-  }
-
-  function calcChange() {
-    const n = parseInt(document.getElementById('numPhotos').value);
-    if (!n) { hideResults(); return; }
-    const totalRSD = n * getPrice();
-    const rate = getRate();
-    const paidRSD = selectedCurrency === 'RSD' ? collectedAmount : collectedAmount * rate;
-    const diff = paidRSD - totalRSD;
-
-    hideResults();
-
-    if (collectedAmount <= 0) return;
-
-    if (Math.abs(diff) < 0.5) {
-      document.getElementById('result-tacno').style.display = 'block';
-    } else if (diff > 0) {
-      document.getElementById('kusur-value').textContent = fmtRSD(diff);
-      document.getElementById('kusur-sub').textContent = 'Priblizno ' + fmtEUR(diff / rate);
-      document.getElementById('result-kusur').style.display = 'block';
-    } else {
-      // Fali jos
-      const fali = Math.abs(diff);
-      document.getElementById('fali-value').textContent = fmtRSD(fali);
-      document.getElementById('fali-sub').textContent = 'Priblizno ' + fmtEUR(fali / rate);
-      document.getElementById('result-fali').style.display = 'block';
-    }
-  }
-
-  function hideResults() {
-    document.getElementById('result-kusur').style.display = 'none';
-    document.getElementById('result-tacno').style.display = 'none';
-    document.getElementById('result-fali').style.display  = 'none';
-  }
-
-  function resetAll() {
-    document.getElementById('numPhotos').value = '';
-    document.getElementById('payment-block').style.display = 'none';
-    document.getElementById('totals-inline').style.display = 'none';
-    clearAmount();
-    setCurrency('RSD');
+  function switchPriceTab(id) {
+    ['300', '200'].forEach(t => {
+      document.getElementById('panel-' + t).classList.toggle('hidden', t !== id);
+      document.getElementById('ptab-' + t).classList.toggle('active', t === id);
+    });
   }
 
   function fmtRSD(n) {
@@ -516,7 +487,96 @@
     return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
   }
 
-  document.getElementById('manualInput').addEventListener('keydown', e => { if (e.key==='Enter') addManual(); });
+  function createApp(suffix, price) {
+    const state = { currency: 'RSD', collected: 0 };
+    function el(id) { return document.getElementById(id + '-' + suffix); }
+
+    function calculateTotal() {
+      const n = parseInt(el('numPhotos').value);
+      const pb = el('payment-block');
+      const ti = el('totals-inline');
+      if (!n || n < 1) { pb.style.display='none'; ti.style.display='none'; return; }
+      const totalRSD = n * price;
+      el('display-rsd').textContent = fmtRSD(totalRSD);
+      el('display-eur').textContent = fmtEUR(totalRSD / getRate());
+      ti.style.display = 'flex';
+      pb.style.display = 'flex';
+      clearAmount();
+    }
+
+    function setCurrency(cur) {
+      state.currency = cur;
+      el('tab-rsd').classList.toggle('active', cur==='RSD');
+      el('tab-eur').classList.toggle('active', cur==='EUR');
+      el('apoeni-rsd').style.display = cur==='RSD' ? 'block' : 'none';
+      el('apoeni-eur').style.display = cur==='EUR' ? 'block' : 'none';
+      el('rb-label').textContent = cur==='RSD' ? 'Primljeno (RSD)' : 'Primljeno (EUR)';
+      clearAmount();
+    }
+
+    function addAmount(val) { state.collected += val; updateDisplay(); calcChange(); }
+
+    function addManual() {
+      const inp = el('manualInput');
+      const val = parseFloat(inp.value);
+      if (!isNaN(val) && val > 0) { state.collected += val; inp.value = ''; updateDisplay(); calcChange(); }
+    }
+
+    function clearAmount() {
+      state.collected = 0;
+      el('manualInput').value = '';
+      updateDisplay();
+      hideResults();
+    }
+
+    function updateDisplay() {
+      el('rb-value').textContent = state.currency === 'RSD' ? fmtRSD(state.collected) : fmtEUR(state.collected);
+    }
+
+    function calcChange() {
+      const n = parseInt(el('numPhotos').value);
+      if (!n) { hideResults(); return; }
+      const totalRSD = n * price;
+      const rate = getRate();
+      const paidRSD = state.currency === 'RSD' ? state.collected : state.collected * rate;
+      const diff = paidRSD - totalRSD;
+      hideResults();
+      if (state.collected <= 0) return;
+      if (Math.abs(diff) < 0.5) {
+        el('result-tacno').style.display = 'block';
+      } else if (diff > 0) {
+        el('kusur-value').textContent = fmtRSD(diff);
+        el('kusur-sub').textContent = 'Priblizno ' + fmtEUR(diff / rate);
+        el('result-kusur').style.display = 'block';
+      } else {
+        const fali = Math.abs(diff);
+        el('fali-value').textContent = fmtRSD(fali);
+        el('fali-sub').textContent = 'Priblizno ' + fmtEUR(fali / rate);
+        el('result-fali').style.display = 'block';
+      }
+    }
+
+    function hideResults() {
+      el('result-kusur').style.display = 'none';
+      el('result-tacno').style.display = 'none';
+      el('result-fali').style.display = 'none';
+    }
+
+    function resetAll() {
+      el('numPhotos').value = '';
+      el('payment-block').style.display = 'none';
+      el('totals-inline').style.display = 'none';
+      clearAmount();
+      setCurrency('RSD');
+    }
+
+    el('manualInput').addEventListener('keydown', e => { if (e.key === 'Enter') addManual(); });
+
+    return { calculateTotal, setCurrency, addAmount, addManual, clearAmount, resetAll };
+  }
+
+  const app300 = createApp('300', 300);
+  const app200 = createApp('200', 200);
 </script>
 </body>
 </html>
