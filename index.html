@@ -1,432 +1,974 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Bingo 49</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Kalkulator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 10px;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: #0d0d14;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
 
-        .container {
-            max-width: 390px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      padding: 10px 14px 12px;
+      gap: 8px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 28px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
+    .topbar { display: flex; justify-content: flex-end; flex-shrink: 0; }
+    .settings-btn {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9px;
+      color: #8896a8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 13px;
+      cursor: pointer;
+    }
 
-        .bingo-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 360px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #1a1a28;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 22px 20px;
+      width: 100%;
+      max-width: 340px;
+    }
+    .modal-title {
+      color: #8896a8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      margin-bottom: 14px;
+    }
+    .modal-row { margin-bottom: 12px; }
+    .modal-label { color: #8896a8; font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 5px; }
+    .modal-close {
+      width: 100%;
+      margin-top: 16px;
+      padding: 11px;
+      border-radius: 11px;
+      border: none;
+      background: #d4a843;
+      color: #0d0d14;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
 
-        .number-cell {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            border: 2px solid #333;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-            position: relative;
-            overflow: hidden;
-            min-height: 40px;
-            -webkit-tap-highlight-color: transparent;
-        }
+    .slabel {
+      color: #8896a8;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
 
-        .number-cell:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 11px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      outline: none;
+      -webkit-appearance: none;
+      transition: border 0.2s;
+    }
+    input:focus { border-color: #d4a843; background: rgba(255,255,255,0.08); }
+    input::placeholder { color: #3d4a5a; font-weight: 400; font-size: 0.88rem; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-        .number-cell:active {
-            transform: scale(0.95);
-        }
+    /* PRICE TABS */
+    .price-tabs-wrap { flex-shrink: 0; }
+    .price-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .price-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: #8896a8;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .price-tab.active { background: #d4a843; color: #0d0d14; }
 
-        /* Boje za svaku kolonu */
-        .red { background-color: #ff4444; color: white; }
-        .yellow { background-color: #ffdd44; color: black; }
-        .blue { background-color: #4488ff; color: white; }
-        .orange { background-color: #ff8844; color: white; }
-        .green { background-color: #44aa44; color: white; }
-        .purple { background-color: #aa44aa; color: white; }
-        .black { background-color: #333333; color: white; }
+    /* PRICE PANELS */
+    .price-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .price-panel.hidden { display: none !important; }
+    .price-panel::-webkit-scrollbar { width: 3px; }
+    .price-panel::-webkit-scrollbar-track { background: transparent; }
+    .price-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
 
-        /* Efekat brisanja */
-        .deleted {
-            background-color: #f0f0f0 !important;
-            color: #ccc !important;
-            text-decoration: line-through;
-            transform: scale(0.8);
-            opacity: 0.5;
-            border-color: #ccc;
-        }
+    /* PHOTOS BLOCK */
+    .photos-block {
+      flex-shrink: 0;
+      background: #161622;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+    .photos-row { display: flex; align-items: center; gap: 14px; }
+    .photos-input-wrap { flex-shrink: 0; width: 90px; }
+    .photos-input {
+      font-size: 2rem !important;
+      font-weight: 800 !important;
+      text-align: center;
+      padding: 8px 6px !important;
+      border-radius: 10px !important;
+      letter-spacing: 2px;
+      width: 90px !important;
+    }
+    .totals-inline {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .ti-rsd { color: #d4a843; font-size: 1.5rem; font-weight: 800; line-height: 1; letter-spacing: 0.5px; }
+    .ti-eur { color: #5ba4cf; font-size: 0.82rem; font-weight: 700; }
+    .ti-km  { color: #68d391; font-size: 0.82rem; font-weight: 700; }
 
-        .deleted:hover {
-            transform: scale(0.8);
-        }
+    /* Category dropdown for 200 RSD */
+    .category-row {
+      margin-top: 10px;
+      display: none;
+    }
+    .category-row.visible { display: block; }
+    .cat-label { color: #8896a8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.3px; margin-bottom: 5px; }
+    .cat-select-wrap { display: flex; gap: 6px; }
+    select.cat-select {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(212,168,67,0.3);
+      background: rgba(212,168,67,0.08);
+      color: #d4a843;
+      font-size: 0.85rem;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23d4a843' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+    select.cat-select option { background: #1a1a28; color: #fff; }
+    .add-cat-btn {
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(104,211,145,0.3);
+      background: rgba(104,211,145,0.08);
+      color: #68d391;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .add-cat-btn:active { background: rgba(104,211,145,0.18); }
 
-        .reset-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    /* Add category modal */
+    .addcat-modal {
+      background: #1a1a28;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 22px 20px;
+      width: 100%;
+      max-width: 340px;
+    }
+    .addcat-input {
+      margin-top: 10px;
+    }
+    .addcat-btns { display: flex; gap: 8px; margin-top: 14px; }
+    .addcat-btns button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-confirm { background: #d4a843; color: #0d0d14; }
+    .btn-cancel { background: rgba(255,255,255,0.07); color: #8896a8; border: 1px solid rgba(255,255,255,0.1) !important; }
 
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+    /* RSD UNOS block (for 200 panel) */
+    .rsd-unos-block {
+      flex-shrink: 0;
+      background: #161622;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: none;
+    }
+    .rsd-unos-block.visible { display: block; }
+    .rsd-unos-row { display: flex; gap: 7px; align-items: center; }
+    .rsd-unos-row input { flex: 1; font-size: 0.95rem !important; }
+    .rsd-unos-row button {
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(212,168,67,0.35);
+      background: rgba(212,168,67,0.1);
+      color: #d4a843;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .rsd-unos-row button:active { background: rgba(212,168,67,0.22); }
+    .rsd-unos-result {
+      margin-top: 10px;
+      background: rgba(212,168,67,0.07);
+      border: 1.5px solid rgba(212,168,67,0.2);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: none;
+    }
+    .rsd-unos-result .rur-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; }
+    .rur-label { color: #8896a8; font-size: 0.72rem; font-weight: 600; }
+    .rur-val { font-weight: 800; font-size: 0.95rem; }
+    .rur-val.gold { color: #d4a843; }
+    .rur-val.blue { color: #5ba4cf; }
+    .rur-val.green { color: #68d391; }
 
-        .reset-btn:active {
-            transform: translateY(0);
-        }
+    /* PAYMENT BLOCK */
+    .payment-block {
+      flex-shrink: 0;
+      display: none;
+      flex-direction: column;
+      gap: 7px;
+      background: #161622;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
 
-        .stats {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 16px;
-            color: #666;
-        }
+    /* Currency Tabs — 3 tabs */
+    .tabs {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .tab {
+      flex: 1;
+      padding: 8px 4px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #8896a8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab.active { background: #d4a843; color: #0d0d14; }
 
-        .selected-numbers {
-            background: #f8f9fa;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
+    /* Collected currencies summary */
+    .collected-summary {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .cs-pill {
+      flex: 1;
+      min-width: 80px;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+    .cs-pill-label { color: #8896a8; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .cs-pill-val { font-size: 0.95rem; font-weight: 800; margin-top: 1px; }
+    .cs-pill-val.gold { color: #d4a843; }
+    .cs-pill-val.blue { color: #5ba4cf; }
+    .cs-pill-val.green { color: #68d391; }
+    .cs-pill-val.white { color: #fff; }
 
-        .selected-numbers h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
+    /* Apoeni */
+    .apoeni-label { color: #8896a8; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.3px; flex-shrink: 0; }
+    .apoeni-grid { display: grid; gap: 6px; flex-shrink: 0; }
+    .apoeni-grid.rsd { grid-template-columns: repeat(3, 1fr); }
+    .apoeni-grid.eur { grid-template-columns: repeat(5, 1fr); }
+    .apoeni-grid.km  { grid-template-columns: repeat(5, 1fr); }
+    .apon-btn {
+      padding: 10px 4px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #c8d6e5;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .apon-btn:active { transform: scale(0.93); }
+    .rsd .apon-btn { border-color: rgba(212,168,67,0.25); }
+    .rsd .apon-btn:active { background: rgba(212,168,67,0.2); color: #d4a843; }
+    .eur .apon-btn { border-color: rgba(91,164,207,0.25); }
+    .eur .apon-btn:active { background: rgba(91,164,207,0.2); color: #5ba4cf; }
+    .km .apon-btn { border-color: rgba(104,211,145,0.25); }
+    .km .apon-btn:active { background: rgba(104,211,145,0.2); color: #68d391; }
 
-        .numbers-display {
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            min-height: 60px;
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 10px;
-            word-wrap: break-word;
-        }
+    /* Received combined */
+    .received-row {
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 9px 12px;
+    }
+    .rb-inner { flex: 1; }
+    .rb-label { color: #8896a8; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .rb-value { color: #fff; font-size: 1.1rem; font-weight: 800; line-height: 1.3; }
+    .clear-btn {
+      background: rgba(229,62,62,0.1);
+      border: 1.5px solid rgba(229,62,62,0.22);
+      border-radius: 8px;
+      color: #fc8181;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .clear-btn:active { background: rgba(229,62,62,0.22); }
 
-        .copy-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin-right: 10px;
-        }
+    /* Manual */
+    .manual-row { display: flex; gap: 7px; flex-shrink: 0; }
+    .manual-row input { flex: 1; font-size: 0.88rem !important; font-weight: 600 !important; padding: 9px 12px !important; }
+    .manual-row button {
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(212,168,67,0.35);
+      background: rgba(212,168,67,0.1);
+      color: #d4a843;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .manual-row button:active { background: rgba(212,168,67,0.22); }
 
-        .copy-btn:hover {
-            background: #218838;
-            transform: translateY(-1px);
-        }
+    /* Results */
+    .result-box { border-radius: 12px; padding: 10px 14px; display: none; flex-shrink: 0; }
+    .result-box.green { background: rgba(56,178,72,0.12);  border: 1.5px solid rgba(56,178,72,0.3); }
+    .result-box.teal  { background: rgba(104,211,145,0.1); border: 1.5px solid rgba(104,211,145,0.28); }
+    .result-box.red   { background: rgba(229,62,62,0.1);   border: 1.5px solid rgba(229,62,62,0.3); }
+    .rl { color: #8896a8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.3px; }
+    .rv { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1.2; }
+    .rs { color: #8896a8; font-size: 0.78rem; margin-top: 1px; }
 
-        .copy-btn:active {
-            transform: translateY(0);
-        }
-
-        .clear-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .clear-btn:hover {
-            background: #c82333;
-            transform: translateY(-1px);
-        }
-
-        .copy-success {
-            background: #d4edda !important;
-            border-color: #c3e6cb !important;
-            animation: flash 0.5s ease-in-out;
-        }
-
-        @keyframes flash {
-            0% { background: #28a745; }
-            100% { background: #d4edda; }
-        }
-
-        /* Responsive dizajn za iPhone */
-        @media (max-width: 430px) {
-            .container {
-                margin: 5px;
-                padding: 12px;
-                max-width: calc(100vw - 10px);
-            }
-            
-            .number-cell {
-                font-size: 13px;
-                min-height: 35px;
-            }
-            
-            .bingo-grid {
-                gap: 4px;
-                max-width: 100%;
-            }
-            
-            h1 {
-                font-size: 24px;
-                margin-bottom: 15px;
-            }
-        }
-
-        @media (max-width: 350px) {
-            .number-cell {
-                font-size: 12px;
-                min-height: 32px;
-            }
-            
-            .container {
-                padding: 10px;
-            }
-            
-            .bingo-grid {
-                gap: 3px;
-            }
-        }
-    </style>
+    /* Reset */
+    .reset-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 11px;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: #8896a8;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .reset-btn:active { background: rgba(255,255,255,0.09); }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎯 BINGO 49</h1>
-        
-        <div class="stats">
-            <span>Ukupno: <strong id="total">49</strong></span> | 
-            <span>Izabrano: <strong id="selected">0</strong></span>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <button class="settings-btn" onclick="toggleModal()">Podesavanja</button>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-title">Podesavanja</div>
+      <div class="modal-row">
+        <label class="modal-label">1 EUR = ? RSD</label>
+        <input type="number" inputmode="decimal" id="exchangeRate" value="117" min="1" step="0.01"/>
+      </div>
+      <div class="modal-row">
+        <label class="modal-label">1 KM = ? RSD</label>
+        <input type="number" inputmode="decimal" id="kmRate" value="60" min="1" step="0.01"/>
+      </div>
+      <button class="modal-close" onclick="toggleModal()">Sacuvaj</button>
+    </div>
+  </div>
+
+  <!-- ADD CATEGORY MODAL -->
+  <div class="modal-overlay" id="addcat-overlay" onclick="closeAddCatOutside(event)">
+    <div class="addcat-modal">
+      <div class="modal-title">Nova kategorija</div>
+      <input type="text" id="addcat-input" class="addcat-input" placeholder="npr. Mlada prijatelj..." maxlength="40"/>
+      <div class="addcat-btns">
+        <button class="btn-cancel" onclick="closeAddCat()">Odustani</button>
+        <button class="btn-confirm" onclick="confirmAddCat()">Dodaj</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE TABS -->
+  <div class="price-tabs-wrap">
+    <div class="price-tabs">
+      <button class="price-tab active" id="ptab-300" onclick="switchPriceTab('300')">300 RSD</button>
+      <button class="price-tab" id="ptab-200" onclick="switchPriceTab('200')">200 RSD</button>
+    </div>
+  </div>
+
+  <!-- ===================== PANEL 300 RSD ===================== -->
+  <div class="price-panel" id="panel-300">
+    <div class="photos-block">
+      <div class="slabel">Broj fotografija</div>
+      <div class="photos-row">
+        <div class="photos-input-wrap">
+          <input class="photos-input" type="number" inputmode="numeric" pattern="[0-9]*"
+                 id="numPhotos-300" min="1" placeholder="0" oninput="app300.calculateTotal()"/>
         </div>
-        
-        <div class="selected-numbers">
-            <h3>📝 Izabrani brojevi:</h3>
-            <div class="numbers-display" id="numbersDisplay">
-                Ovde će se prikazati brojevi koje izaberete...
-            </div>
-            <button class="copy-btn" onclick="copyNumbers()">KOPIRAJ</button>
-            <button class="clear-btn" onclick="clearSelected()">OBRIŠI SVE</button>
+        <div class="totals-inline" id="totals-inline-300">
+          <div class="ti-rsd" id="display-rsd-300">—</div>
+          <div class="ti-eur" id="display-eur-300">—</div>
+          <div class="ti-km"  id="display-km-300">—</div>
         </div>
-        
-        <div class="bingo-grid" id="bingoGrid">
-            <!-- Brojevi će biti generisani JavaScript-om -->
-        </div>
-        
-        <button class="reset-btn" onclick="resetGame()">
-            RESETUJ IGRU
-        </button>
+      </div>
     </div>
 
-    <script>
-        // Definisanje boja za svaku kolonu
-        const colorClasses = [
-            'red',    // 1,8,15,22,29,36,43
-            'yellow', // 2,9,16,23,30,37,44
-            'blue',   // 3,10,17,24,31,38,45
-            'orange', // 4,11,18,25,32,39,46
-            'green',  // 5,12,19,26,33,40,47
-            'purple', // 6,13,20,27,34,41,48
-            'black'   // 7,14,21,28,35,42,49
-        ];
+    <div class="payment-block" id="payment-block-300">
+      <div class="slabel">Placanje i Kusur</div>
 
-        let deletedNumbers = new Set();
-        let selectedNumbers = new Set();
+      <!-- Currency tabs -->
+      <div class="tabs">
+        <button class="tab active" id="tab-rsd-300" onclick="app300.setCurrency('RSD')">Dinari</button>
+        <button class="tab"        id="tab-eur-300" onclick="app300.setCurrency('EUR')">Euri</button>
+        <button class="tab"        id="tab-km-300"  onclick="app300.setCurrency('KM')">Marke</button>
+      </div>
 
-        function createBingoGrid() {
-            const grid = document.getElementById('bingoGrid');
-            grid.innerHTML = '';
+      <!-- Apoeni RSD -->
+      <div id="apoeni-rsd-300">
+        <div class="apoeni-label">Klikni apoene (RSD)</div>
+        <div class="apoeni-grid rsd">
+          <button class="apon-btn" onclick="app300.addAmount(100)">100</button>
+          <button class="apon-btn" onclick="app300.addAmount(200)">200</button>
+          <button class="apon-btn" onclick="app300.addAmount(500)">500</button>
+          <button class="apon-btn" onclick="app300.addAmount(1000)">1.000</button>
+          <button class="apon-btn" onclick="app300.addAmount(2000)">2.000</button>
+          <button class="apon-btn" onclick="app300.addAmount(5000)">5.000</button>
+        </div>
+      </div>
+      <!-- Apoeni EUR -->
+      <div id="apoeni-eur-300" style="display:none;">
+        <div class="apoeni-label">Klikni apoene (EUR)</div>
+        <div class="apoeni-grid eur">
+          <button class="apon-btn" onclick="app300.addAmount(5)">5</button>
+          <button class="apon-btn" onclick="app300.addAmount(10)">10</button>
+          <button class="apon-btn" onclick="app300.addAmount(20)">20</button>
+          <button class="apon-btn" onclick="app300.addAmount(50)">50</button>
+          <button class="apon-btn" onclick="app300.addAmount(100)">100</button>
+        </div>
+      </div>
+      <!-- Apoeni KM -->
+      <div id="apoeni-km-300" style="display:none;">
+        <div class="apoeni-label">Klikni apoene (KM)</div>
+        <div class="apoeni-grid km">
+          <button class="apon-btn" onclick="app300.addAmount(5)">5</button>
+          <button class="apon-btn" onclick="app300.addAmount(10)">10</button>
+          <button class="apon-btn" onclick="app300.addAmount(20)">20</button>
+          <button class="apon-btn" onclick="app300.addAmount(50)">50</button>
+          <button class="apon-btn" onclick="app300.addAmount(100)">100</button>
+        </div>
+      </div>
 
-            for (let i = 1; i <= 49; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'number-cell';
-                cell.textContent = i;
-                cell.id = `number-${i}`;
-                
-                // Određuj boju na osnovu broja
-                const colorIndex = (i - 1) % 7;
-                cell.classList.add(colorClasses[colorIndex]);
-                
-                // Dodaj event listener za klik
-                cell.addEventListener('click', function() {
-                    toggleNumber(i, cell);
-                });
-                
-                grid.appendChild(cell);
-            }
-        }
+      <!-- Primljeno summary -->
+      <div class="collected-summary">
+        <div class="cs-pill">
+          <div class="cs-pill-label">Dinari</div>
+          <div class="cs-pill-val gold" id="cs-rsd-300">0 RSD</div>
+        </div>
+        <div class="cs-pill">
+          <div class="cs-pill-label">Euri</div>
+          <div class="cs-pill-val blue" id="cs-eur-300">0 EUR</div>
+        </div>
+        <div class="cs-pill">
+          <div class="cs-pill-label">Marke</div>
+          <div class="cs-pill-val green" id="cs-km-300">0 KM</div>
+        </div>
+        <div class="cs-pill">
+          <div class="cs-pill-label">Ukupno ≈</div>
+          <div class="cs-pill-val white" id="cs-total-300">0 RSD</div>
+        </div>
+      </div>
 
-        function toggleNumber(number, cell) {
-            if (selectedNumbers.has(number)) {
-                // Ukloni iz izabranih
-                selectedNumbers.delete(number);
-                cell.classList.remove('deleted');
-            } else {
-                // Dodaj u izabrane
-                selectedNumbers.add(number);
-                cell.classList.add('deleted');
-            }
-            
-            updateDisplay();
-        }
+      <div class="received-row">
+        <div class="rb-inner">
+          <div class="rb-label">Dodaj iznos</div>
+          <div class="rb-value" id="rb-cur-300">Aktivan: Dinari (RSD)</div>
+        </div>
+        <button class="clear-btn" onclick="app300.clearAmount()">Obrisi sve</button>
+      </div>
+      <div class="manual-row">
+        <input type="number" inputmode="decimal" id="manualInput-300" placeholder="Unesi iznos..."/>
+        <button onclick="app300.addManual()">Dodaj</button>
+      </div>
 
-        function updateDisplay() {
-            // Ažuriraj statistike
-            document.getElementById('selected').textContent = selectedNumbers.size;
-            document.getElementById('total').textContent = 49 - selectedNumbers.size;
-            
-            // Ažuriraj prikaz izabranih brojeva
-            const display = document.getElementById('numbersDisplay');
-            if (selectedNumbers.size === 0) {
-                display.textContent = 'Ovde će se prikazati brojevi koje izaberete...';
-                display.style.color = '#999';
-            } else {
-                const sortedNumbers = Array.from(selectedNumbers).sort((a, b) => a - b);
-                display.textContent = sortedNumbers.join(', ');
-                display.style.color = '#333';
-            }
-        }
+      <div class="result-box green" id="result-kusur-300">
+        <div class="rl">Kusur za vracanje (RSD)</div>
+        <div class="rv" id="kusur-value-300">—</div>
+        <div class="rs" id="kusur-sub-300"></div>
+      </div>
+      <div class="result-box teal" id="result-tacno-300">
+        <div class="rl">Status</div>
+        <div class="rv" style="font-size:1.1rem; color:#68d391;">Nema kusura!</div>
+      </div>
+      <div class="result-box red" id="result-fali-300">
+        <div class="rl">Jos fali (RSD)</div>
+        <div class="rv" id="fali-value-300">—</div>
+        <div class="rs" id="fali-sub-300"></div>
+      </div>
+      <button class="reset-btn" onclick="app300.resetAll()">Nova transakcija</button>
+    </div>
+  </div>
 
-        function copyNumbers() {
-            const display = document.getElementById('numbersDisplay');
-            const copyBtn = document.querySelector('.copy-btn');
-            
-            if (selectedNumbers.size === 0) {
-                alert('Nema brojeva za kopiranje!');
-                return;
-            }
-            
-            const sortedNumbers = Array.from(selectedNumbers).sort((a, b) => a - b);
-            const numbersText = sortedNumbers.join(', ');
-            
-            // Pokušaj kopiranje u clipboard
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(numbersText).then(() => {
-                    showCopySuccess(copyBtn);
-                }).catch(() => {
-                    fallbackCopy(numbersText, copyBtn);
-                });
-            } else {
-                fallbackCopy(numbersText, copyBtn);
-            }
-        }
+  <!-- ===================== PANEL 200 RSD ===================== -->
+  <div class="price-panel hidden" id="panel-200">
 
-        function fallbackCopy(text, btn) {
-            // Fallback metoda za starije browsere
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showCopySuccess(btn);
-            } catch (err) {
-                alert('Greška pri kopiranju. Brojevi: ' + text);
-            }
-            
-            document.body.removeChild(textArea);
-        }
+    <!-- Broj fotografija -->
+    <div class="photos-block">
+      <div class="slabel">Broj fotografija</div>
+      <div class="photos-row">
+        <div class="photos-input-wrap">
+          <input class="photos-input" type="number" inputmode="numeric" pattern="[0-9]*"
+                 id="numPhotos-200" min="1" placeholder="0" oninput="app200.onPhotosInput()"/>
+        </div>
+        <div class="totals-inline" id="totals-inline-200">
+          <div class="ti-rsd" id="display-rsd-200">—</div>
+          <div class="ti-eur" id="display-eur-200">—</div>
+          <div class="ti-km"  id="display-km-200">—</div>
+        </div>
+      </div>
 
-        function showCopySuccess(btn) {
-            const originalText = btn.textContent;
-            btn.textContent = 'KOPIRANO!';
-            btn.classList.add('copy-success');
-            
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.classList.remove('copy-success');
-            }, 2000);
-        }
+      <!-- Kategorija (dropdown) -->
+      <div class="category-row" id="cat-row-200">
+        <div class="cat-label">Kategorija</div>
+        <div class="cat-select-wrap">
+          <select class="cat-select" id="cat-select-200" onchange="app200.onCategoryChange()">
+          </select>
+          <button class="add-cat-btn" onclick="openAddCat()">+ Nova</button>
+        </div>
+      </div>
+    </div>
 
-        function clearSelected() {
-            if (selectedNumbers.size === 0) {
-                return;
-            }
-            
-            if (confirm('Da li ste sigurni da želite da obrišete sve izabrane brojeve?')) {
-                selectedNumbers.clear();
-                const cells = document.querySelectorAll('.number-cell');
-                cells.forEach(cell => {
-                    cell.classList.remove('deleted');
-                });
-                updateDisplay();
-            }
-        }
+    <!-- Unos RSD → konverzija -->
+    <div class="rsd-unos-block" id="rsd-unos-block-200">
+      <div class="slabel">Unos iznosa u RSD → slike + konverzija</div>
+      <div class="rsd-unos-row">
+        <input type="number" inputmode="numeric" id="rsdUnos-200" placeholder="npr. 1800"/>
+        <button onclick="app200.calcFromRSD()">Izracunaj</button>
+      </div>
+      <div class="rsd-unos-result" id="rsd-unos-result-200">
+        <div class="rur-row"><span class="rur-label">Broj slika</span><span class="rur-val gold" id="rur-slike-200">—</span></div>
+        <div class="rur-row"><span class="rur-label">Iznos RSD</span><span class="rur-val gold" id="rur-rsd-200">—</span></div>
+        <div class="rur-row"><span class="rur-label">≈ EUR</span><span class="rur-val blue" id="rur-eur-200">—</span></div>
+        <div class="rur-row"><span class="rur-label">≈ KM</span><span class="rur-val green" id="rur-km-200">—</span></div>
+      </div>
+    </div>
 
-        function resetGame() {
-            selectedNumbers.clear();
-            const cells = document.querySelectorAll('.number-cell');
-            cells.forEach(cell => {
-                cell.classList.remove('deleted');
-            });
-            updateDisplay();
-        }
+    <div class="payment-block" id="payment-block-200">
+      <div class="slabel">Placanje i Kusur</div>
 
-        // Inicijalizuj igru kada se stranica učita
-        document.addEventListener('DOMContentLoaded', function() {
-            createBingoGrid();
-            updateDisplay();
-        });
-    </script>
+      <!-- Currency tabs -->
+      <div class="tabs">
+        <button class="tab active" id="tab-rsd-200" onclick="app200.setCurrency('RSD')">Dinari</button>
+        <button class="tab"        id="tab-eur-200" onclick="app200.setCurrency('EUR')">Euri</button>
+        <button class="tab"        id="tab-km-200"  onclick="app200.setCurrency('KM')">Marke</button>
+      </div>
+
+      <!-- Apoeni RSD -->
+      <div id="apoeni-rsd-200">
+        <div class="apoeni-label">Klikni apoene (RSD)</div>
+        <div class="apoeni-grid rsd">
+          <button class="apon-btn" onclick="app200.addAmount(100)">100</button>
+          <button class="apon-btn" onclick="app200.addAmount(200)">200</button>
+          <button class="apon-btn" onclick="app200.addAmount(500)">500</button>
+          <button class="apon-btn" onclick="app200.addAmount(1000)">1.000</button>
+          <button class="apon-btn" onclick="app200.addAmount(2000)">2.000</button>
+          <button class="apon-btn" onclick="app200.addAmount(5000)">5.000</button>
+        </div>
+      </div>
+      <!-- Apoeni EUR -->
+      <div id="apoeni-eur-200" style="display:none;">
+        <div class="apoeni-label">Klikni apoene (EUR)</div>
+        <div class="apoeni-grid eur">
+          <button class="apon-btn" onclick="app200.addAmount(5)">5</button>
+          <button class="apon-btn" onclick="app200.addAmount(10)">10</button>
+          <button class="apon-btn" onclick="app200.addAmount(20)">20</button>
+          <button class="apon-btn" onclick="app200.addAmount(50)">50</button>
+          <button class="apon-btn" onclick="app200.addAmount(100)">100</button>
+        </div>
+      </div>
+      <!-- Apoeni KM -->
+      <div id="apoeni-km-200" style="display:none;">
+        <div class="apoeni-label">Klikni apoene (KM)</div>
+        <div class="apoeni-grid km">
+          <button class="apon-btn" onclick="app200.addAmount(5)">5</button>
+          <button class="apon-btn" onclick="app200.addAmount(10)">10</button>
+          <button class="apon-btn" onclick="app200.addAmount(20)">20</button>
+          <button class="apon-btn" onclick="app200.addAmount(50)">50</button>
+          <button class="apon-btn" onclick="app200.addAmount(100)">100</button>
+        </div>
+      </div>
+
+      <!-- Primljeno summary -->
+      <div class="collected-summary">
+        <div class="cs-pill">
+          <div class="cs-pill-label">Dinari</div>
+          <div class="cs-pill-val gold" id="cs-rsd-200">0 RSD</div>
+        </div>
+        <div class="cs-pill">
+          <div class="cs-pill-label">Euri</div>
+          <div class="cs-pill-val blue" id="cs-eur-200">0 EUR</div>
+        </div>
+        <div class="cs-pill">
+          <div class="cs-pill-label">Marke</div>
+          <div class="cs-pill-val green" id="cs-km-200">0 KM</div>
+        </div>
+        <div class="cs-pill">
+          <div class="cs-pill-label">Ukupno ≈</div>
+          <div class="cs-pill-val white" id="cs-total-200">0 RSD</div>
+        </div>
+      </div>
+
+      <div class="received-row">
+        <div class="rb-inner">
+          <div class="rb-label">Dodaj iznos</div>
+          <div class="rb-value" id="rb-cur-200">Aktivan: Dinari (RSD)</div>
+        </div>
+        <button class="clear-btn" onclick="app200.clearAmount()">Obrisi sve</button>
+      </div>
+      <div class="manual-row">
+        <input type="number" inputmode="decimal" id="manualInput-200" placeholder="Unesi iznos..."/>
+        <button onclick="app200.addManual()">Dodaj</button>
+      </div>
+
+      <div class="result-box green" id="result-kusur-200">
+        <div class="rl">Kusur za vracanje (RSD)</div>
+        <div class="rv" id="kusur-value-200">—</div>
+        <div class="rs" id="kusur-sub-200"></div>
+      </div>
+      <div class="result-box teal" id="result-tacno-200">
+        <div class="rl">Status</div>
+        <div class="rv" style="font-size:1.1rem; color:#68d391;">Nema kusura!</div>
+      </div>
+      <div class="result-box red" id="result-fali-200">
+        <div class="rl">Jos fali (RSD)</div>
+        <div class="rv" id="fali-value-200">—</div>
+        <div class="rs" id="fali-sub-200"></div>
+      </div>
+      <button class="reset-btn" onclick="app200.resetAll()">Nova transakcija</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ─── Rates ─── */
+  function getEurRate() { return parseFloat(document.getElementById('exchangeRate').value) || 117; }
+  function getKmRate()  { return parseFloat(document.getElementById('kmRate').value) || 60; }
+
+  /* ─── Modal ─── */
+  function toggleModal() { document.getElementById('modal-overlay').classList.toggle('open'); }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) toggleModal(); }
+
+  /* ─── Panel switch ─── */
+  function switchPriceTab(id) {
+    ['300', '200'].forEach(t => {
+      document.getElementById('panel-' + t).classList.toggle('hidden', t !== id);
+      document.getElementById('ptab-' + t).classList.toggle('active', t === id);
+    });
+  }
+
+  /* ─── Format helpers ─── */
+  function fmtRSD(n) {
+    return new Intl.NumberFormat('sr-RS',{minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(n)) + ' RSD';
+  }
+  function fmtEUR(n) {
+    return new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n) + ' EUR';
+  }
+  function fmtKM(n) {
+    return new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n) + ' KM';
+  }
+
+  /* ─── Categories (200 RSD panel) ─── */
+  const DEFAULT_CATS = [
+    'Mlada porodica','Mladozenja porodica',
+    'Mlada sestra','Mlada brat',
+    'Mladozenja sestra','Mladozenja brat',
+    'Kuma','Kum'
+  ];
+  let categories = [...DEFAULT_CATS];
+
+  function renderCategorySelect() {
+    const sel = document.getElementById('cat-select-200');
+    const prev = sel.value;
+    sel.innerHTML = '';
+    categories.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
+    });
+    if (categories.includes(prev)) sel.value = prev;
+  }
+
+  function openAddCat() {
+    document.getElementById('addcat-input').value = '';
+    document.getElementById('addcat-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('addcat-input').focus(), 100);
+  }
+  function closeAddCat() { document.getElementById('addcat-overlay').classList.remove('open'); }
+  function closeAddCatOutside(e) { if (e.target === document.getElementById('addcat-overlay')) closeAddCat(); }
+  function confirmAddCat() {
+    const val = document.getElementById('addcat-input').value.trim();
+    if (!val) return;
+    if (!categories.includes(val)) {
+      categories.push(val);
+      renderCategorySelect();
+      document.getElementById('cat-select-200').value = val;
+    }
+    closeAddCat();
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCategorySelect();
+  });
+  document.getElementById('addcat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') confirmAddCat();
+  });
+
+  /* ─── App factory ─── */
+  function createApp(suffix, price) {
+    const state = { currency: 'RSD', rsd: 0, eur: 0, km: 0 };
+
+    function el(id) { return document.getElementById(id + '-' + suffix); }
+
+    function getTotalPaidRSD() {
+      return state.rsd + (state.eur * getEurRate()) + (state.km * getKmRate());
+    }
+
+    function calculateTotal() {
+      const n = parseInt(el('numPhotos').value);
+      const pb = el('payment-block');
+      const ti = el('totals-inline');
+      if (!n || n < 1) {
+        pb.style.display = 'none';
+        ti.style.display = 'none';
+        return;
+      }
+      const totalRSD = n * price;
+      el('display-rsd').textContent = fmtRSD(totalRSD);
+      el('display-eur').textContent = '≈ ' + fmtEUR(totalRSD / getEurRate());
+      el('display-km').textContent  = '≈ ' + fmtKM(totalRSD / getKmRate());
+      ti.style.display = 'flex';
+      pb.style.display = 'flex';
+      clearAmount();
+    }
+
+    function setCurrency(cur) {
+      state.currency = cur;
+      ['rsd','eur','km'].forEach(c => {
+        document.getElementById('tab-' + c + '-' + suffix).classList.toggle('active', c === cur.toLowerCase());
+        document.getElementById('apoeni-' + c + '-' + suffix).style.display = (c === cur.toLowerCase()) ? 'block' : 'none';
+      });
+      const labels = { RSD: 'Aktivan: Dinari (RSD)', EUR: 'Aktivan: Euri (EUR)', KM: 'Aktivan: Marke (KM)' };
+      el('rb-cur').textContent = labels[cur];
+    }
+
+    function updateSummary() {
+      const totalRSD = getTotalPaidRSD();
+      el('cs-rsd').textContent   = fmtRSD(state.rsd);
+      el('cs-eur').textContent   = fmtEUR(state.eur);
+      el('cs-km').textContent    = fmtKM(state.km);
+      el('cs-total').textContent = fmtRSD(totalRSD);
+    }
+
+    function addAmount(val) {
+      if (state.currency === 'RSD') state.rsd += val;
+      else if (state.currency === 'EUR') state.eur += val;
+      else if (state.currency === 'KM')  state.km  += val;
+      updateSummary();
+      calcChange();
+    }
+
+    function addManual() {
+      const inp = el('manualInput');
+      const val = parseFloat(inp.value);
+      if (!isNaN(val) && val > 0) {
+        if (state.currency === 'RSD') state.rsd += val;
+        else if (state.currency === 'EUR') state.eur += val;
+        else if (state.currency === 'KM')  state.km  += val;
+        inp.value = '';
+        updateSummary();
+        calcChange();
+      }
+    }
+
+    function clearAmount() {
+      state.rsd = 0; state.eur = 0; state.km = 0;
+      if (el('manualInput')) el('manualInput').value = '';
+      updateSummary();
+      hideResults();
+    }
+
+    function calcChange() {
+      const n = parseInt(el('numPhotos').value);
+      if (!n) { hideResults(); return; }
+      const totalRSD = n * price;
+      const paidRSD  = getTotalPaidRSD();
+      const diff = paidRSD - totalRSD;
+      hideResults();
+      if (paidRSD <= 0) return;
+      if (Math.abs(diff) < 0.5) {
+        el('result-tacno').style.display = 'block';
+      } else if (diff > 0) {
+        // Kusur uvijek u dinarima
+        el('kusur-value').textContent = fmtRSD(diff);
+        el('kusur-sub').textContent   = '≈ ' + fmtEUR(diff / getEurRate()) + '  |  ≈ ' + fmtKM(diff / getKmRate());
+        el('result-kusur').style.display = 'block';
+      } else {
+        const fali = Math.abs(diff);
+        el('fali-value').textContent = fmtRSD(fali);
+        el('fali-sub').textContent   = '≈ ' + fmtEUR(fali / getEurRate()) + '  |  ≈ ' + fmtKM(fali / getKmRate());
+        el('result-fali').style.display = 'block';
+      }
+    }
+
+    function hideResults() {
+      el('result-kusur').style.display = 'none';
+      el('result-tacno').style.display = 'none';
+      el('result-fali').style.display  = 'none';
+    }
+
+    function resetAll() {
+      el('numPhotos').value = '';
+      el('payment-block').style.display = 'none';
+      el('totals-inline').style.display = 'none';
+      clearAmount();
+      setCurrency('RSD');
+    }
+
+    el('manualInput').addEventListener('keydown', e => { if (e.key === 'Enter') addManual(); });
+
+    return { calculateTotal, setCurrency, addAmount, addManual, clearAmount, resetAll };
+  }
+
+  /* ─── App 300 ─── */
+  const app300 = createApp('300', 300);
+
+  /* ─── App 200 (extended with category + RSD→slike) ─── */
+  const app200 = (function() {
+    const base = createApp('200', 200);
+
+    function el(id) { return document.getElementById(id + '-200'); }
+
+    function onPhotosInput() {
+      base.calculateTotal();
+      const n = parseInt(el('numPhotos').value);
+      const catRow = document.getElementById('cat-row-200');
+      const runosBlock = document.getElementById('rsd-unos-block-200');
+      if (n && n >= 1) {
+        catRow.classList.add('visible');
+        runosBlock.classList.add('visible');
+      } else {
+        catRow.classList.remove('visible');
+        runosBlock.classList.remove('visible');
+        document.getElementById('rsd-unos-result-200').style.display = 'none';
+      }
+    }
+
+    function onCategoryChange() { /* can hook future logic */ }
+
+    function calcFromRSD() {
+      const rawVal = document.getElementById('rsdUnos-200').value;
+      const rsdVal = parseFloat(rawVal);
+      if (isNaN(rsdVal) || rsdVal <= 0) {
+        document.getElementById('rsd-unos-result-200').style.display = 'none';
+        return;
+      }
+      const slike = Math.round(rsdVal / 200);
+      const actualRSD = slike * 200;
+      document.getElementById('rur-slike-200').textContent = slike + ' slika';
+      document.getElementById('rur-rsd-200').textContent   = fmtRSD(actualRSD);
+      document.getElementById('rur-eur-200').textContent   = fmtEUR(actualRSD / getEurRate());
+      document.getElementById('rur-km-200').textContent    = fmtKM(actualRSD / getKmRate());
+      document.getElementById('rsd-unos-result-200').style.display = 'block';
+    }
+
+    document.getElementById('rsdUnos-200').addEventListener('keydown', e => {
+      if (e.key === 'Enter') calcFromRSD();
+    });
+
+    return Object.assign({}, base, { onPhotosInput, onCategoryChange, calcFromRSD });
+  })();
+</script>
 </body>
 </html>
