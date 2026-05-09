@@ -486,13 +486,42 @@
       <div class="photos-row">
         <div class="photos-input-wrap">
           <input class="photos-input" type="number" inputmode="numeric" pattern="[0-9]*"
-                 id="numPhotos-300" min="1" placeholder="0" oninput="app300.calculateTotal()"/>
+                 id="numPhotos-300" min="1" placeholder="0" oninput="app300.onPhotosInput()"/>
         </div>
         <div class="totals-inline" id="totals-inline-300">
           <div class="ti-rsd" id="display-rsd-300">—</div>
           <div class="ti-eur" id="display-eur-300">—</div>
           <div class="ti-km"  id="display-km-300">—</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Unos RSD → konverzija (300) -->
+    <div class="rsd-unos-block" id="rsd-unos-block-300">
+      <div class="slabel">Unos iznosa u RSD → slike + konverzija</div>
+      <div class="rsd-unos-row">
+        <input type="number" inputmode="numeric" id="rsdUnos-300" placeholder="npr. 2400"/>
+        <button onclick="app300.calcFromRSD()">Izracunaj</button>
+      </div>
+      <div class="rsd-unos-result" id="rsd-unos-result-300">
+        <div class="rur-row"><span class="rur-label">Broj slika</span><span class="rur-val gold" id="rur-slike-300">—</span></div>
+        <div class="rur-row"><span class="rur-label">Iznos RSD</span><span class="rur-val gold" id="rur-rsd-300">—</span></div>
+        <div class="rur-row"><span class="rur-label">≈ EUR</span><span class="rur-val blue" id="rur-eur-300">—</span></div>
+        <div class="rur-row"><span class="rur-label">≈ KM</span><span class="rur-val green" id="rur-km-300">—</span></div>
+      </div>
+    </div>
+
+    <div class="rsd-unos-block" id="rsd-unos-block-300">
+      <div class="slabel">Unos iznosa u RSD → slike + konverzija</div>
+      <div class="rsd-unos-row">
+        <input type="number" inputmode="numeric" id="rsdUnos-300" placeholder="npr. 1800"/>
+        <button onclick="app300.calcFromRSD()">Izracunaj</button>
+      </div>
+      <div class="rsd-unos-result" id="rsd-unos-result-300">
+        <div class="rur-row"><span class="rur-label">Broj slika</span><span class="rur-val gold" id="rur-slike-300">—</span></div>
+        <div class="rur-row"><span class="rur-label">Iznos RSD</span><span class="rur-val gold" id="rur-rsd-300">—</span></div>
+        <div class="rur-row"><span class="rur-label">≈ EUR</span><span class="rur-val blue" id="rur-eur-300">—</span></div>
+        <div class="rur-row"><span class="rur-label">≈ KM</span><span class="rur-val green" id="rur-km-300">—</span></div>
       </div>
     </div>
 
@@ -921,8 +950,50 @@
     return { calculateTotal, setCurrency, addAmount, addManual, clearAmount, resetAll };
   }
 
-  /* ─── App 300 ─── */
-  const app300 = createApp('300', 300);
+  /* ─── App 300 (extended with RSD→slike) ─── */
+  const app300 = (function() {
+    const base = createApp('300', 300);
+
+    function onPhotosInput() {
+      base.calculateTotal();
+      const n = parseInt(document.getElementById('numPhotos-300').value);
+      const runosBlock = document.getElementById('rsd-unos-block-300');
+      if (n && n >= 1) {
+        runosBlock.classList.add('visible');
+      } else {
+        runosBlock.classList.remove('visible');
+        document.getElementById('rsd-unos-result-300').style.display = 'none';
+      }
+    }
+
+    function calcFromRSD() {
+      const rsdVal = parseFloat(document.getElementById('rsdUnos-300').value);
+      if (isNaN(rsdVal) || rsdVal <= 0) {
+        document.getElementById('rsd-unos-result-300').style.display = 'none';
+        return;
+      }
+      const slike = Math.round(rsdVal / 300);
+      const actualRSD = slike * 300;
+      document.getElementById('rur-slike-300').textContent = slike + ' slika';
+      document.getElementById('rur-rsd-300').textContent   = fmtRSD(actualRSD);
+      document.getElementById('rur-eur-300').textContent   = fmtEUR(actualRSD / getEurRate());
+      document.getElementById('rur-km-300').textContent    = fmtKM(actualRSD / getKmRate());
+      document.getElementById('rsd-unos-result-300').style.display = 'block';
+    }
+
+    function resetAll() {
+      base.resetAll();
+      document.getElementById('rsd-unos-block-300').classList.remove('visible');
+      document.getElementById('rsd-unos-result-300').style.display = 'none';
+      document.getElementById('rsdUnos-300').value = '';
+    }
+
+    document.getElementById('rsdUnos-300').addEventListener('keydown', e => {
+      if (e.key === 'Enter') calcFromRSD();
+    });
+
+    return Object.assign({}, base, { onPhotosInput, calcFromRSD, resetAll });
+  })();
 
   /* ─── App 200 (extended with category + RSD→slike) ─── */
   const app200 = (function() {
